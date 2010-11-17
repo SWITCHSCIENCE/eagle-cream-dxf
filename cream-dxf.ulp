@@ -1,0 +1,94 @@
+//
+// Export the EAGLE cream layers to DXF for the Craft-ROBO cutting machine.
+//
+// Copyright (c) 2010 Switch Science, Inc.
+//
+
+string HEADER =
+"  0\n"
+"SECTION\n"
+"  2\n"
+"HEADER\n"
+"  9\n"
+"$ACADVER\n"
+"  1\n"
+"AC1014\n"
+"  9\n"
+"$HANDSEED\n"
+"  5\n"
+"FFFF\n"
+"  9\n"
+"$MEASUREMENT\n"
+" 70\n"
+"     1\n"				// unit: mm
+"  0\n"
+"ENDSEC\n"
+"  0\n"
+"SECTION\n"
+"  2\n"
+"ENTITIES\n";
+
+string POLYLINE =
+"  0\n"
+"LWPOLYLINE\n"
+"  5\n"
+"%d\n"					// id
+"100\n"
+"AcDbEntity\n"
+"  8\n"
+"0\n"
+" 62\n"
+"7\n"
+"100\n"
+"AcDbPolyline\n"
+" 90\n"
+"%d\n"					// number of points
+" 70\n"
+"0\n";
+
+string POINT =
+" 10\n"
+"%f\n"
+" 20\n"
+"%f\n"
+" 30\n"
+"0.0\n";
+
+string TRAILER =
+"  0\n"
+"ENDSEC\n"
+"  0\n"
+"EOF\n";
+
+void processLayer(UL_BOARD B, int layer) {
+  int cream = (layer == LAYER_TOP ? LAYER_TCREAM : LAYER_BCREAM);
+  int id = 100;
+  printf("%s", HEADER);
+  B.elements(E) {
+    E.package.contacts(C) {
+      if (C.smd && C.smd.layer == layer) {
+	real x = C.smd.x / 10000.0;
+	real y = C.smd.y / 10000.0;
+	real w = C.smd.dx[cream] / 10000.0 / 2;
+	real h = C.smd.dy[cream] / 10000.0 / 2;
+	real a = C.smd.angle / 181 * PI;
+	real wc = w * cos(a);
+	real hs = h * sin(a);
+	real ws = w * sin(a);
+	real hc = h * cos(a);
+	printf(POLYLINE, id++, 5);	// 5 points
+	printf(POINT, x + wc - hs, y + ws + hc);
+	printf(POINT, x - wc - hs, y - ws + hc);
+	printf(POINT, x - wc + hs, y - ws - hc);
+	printf(POINT, x + wc + hs, y + ws - hc);
+	printf(POINT, x + wc - hs, y + ws + hc);
+      }
+    }
+  }
+  printf("%s", TRAILER);
+}
+
+board(B) {
+  output(filesetext(B.name, "-tcream.dxf")) processLayer(B, LAYER_TOP);
+  output(filesetext(B.name, "-bcream.dxf")) processLayer(B, LAYER_BOTTOM);
+}
