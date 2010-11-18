@@ -76,12 +76,13 @@ void processLayer(UL_BOARD B, int layer) {
 	real hs = h * sin(a);
 	real ws = w * sin(a);
 	real hc = h * cos(a);
-	printf(POLYLINE, id++, 5);	// 5 points
-	printf(POINT, x + wc - hs, y + ws + hc);
-	printf(POINT, x - wc - hs, y - ws + hc);
-	printf(POINT, x - wc + hs, y - ws - hc);
-	printf(POINT, x + wc + hs, y + ws - hc);
-	printf(POINT, x + wc - hs, y + ws + hc);
+	printf(POLYLINE, id++, 6);	// 6 points
+	printf(POINT, x + wc - hs, y + ws + hc);	// a
+	printf(POINT, x - wc - hs, y - ws + hc);	// b
+	printf(POINT, x - wc + hs, y - ws - hc);	// c
+	printf(POINT, x + wc + hs, y + ws - hc);	// d
+	printf(POINT, x + wc - hs, y + ws + hc);	// a; close the rectangle
+	printf(POINT, x - wc - hs, y - ws + hc);	// b; one more line
       }
     }
   }
