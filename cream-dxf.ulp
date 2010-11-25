@@ -4,6 +4,8 @@
 // Copyright (c) 2010 Switch Science, Inc.
 //
 
+real SHRINK_WIDTH = 0.05;			// unit: mm
+
 string HEADER =
 "  0\n"
 "SECTION\n"
@@ -69,8 +71,8 @@ void processLayer(UL_BOARD B, int layer) {
       if (C.smd && C.smd.layer == layer) {
 	real x = C.smd.x / 10000.0;
 	real y = C.smd.y / 10000.0;
-	real w = C.smd.dx[cream] / 10000.0 / 2;
-	real h = C.smd.dy[cream] / 10000.0 / 2;
+	real w = C.smd.dx[cream] / 10000.0 / 2 - SHRINK_WIDTH;
+	real h = C.smd.dy[cream] / 10000.0 / 2 - SHRINK_WIDTH;
 	real a = C.smd.angle / 180 * PI;
 	real wc = w * cos(a);
 	real hs = h * sin(a);
