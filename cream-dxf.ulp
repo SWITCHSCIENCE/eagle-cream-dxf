@@ -14,11 +14,7 @@ string HEADER =
 "  9\n"
 "$ACADVER\n"
 "  1\n"
-"AC1014\n"
-"  9\n"
-"$HANDSEED\n"
-"  5\n"
-"FFFF\n"
+"AC1013\n"
 "  9\n"
 "$MEASUREMENT\n"
 " 70\n"
@@ -33,28 +29,62 @@ string HEADER =
 string POLYLINE =
 "  0\n"
 "LWPOLYLINE\n"
-"  5\n"
-"%d\n"					// id
-"100\n"
-"AcDbEntity\n"
 "  8\n"
-"0\n"
+"0\n"					// layer
 " 62\n"
-"7\n"
-"100\n"
-"AcDbPolyline\n"
+"7\n"					// color
 " 90\n"
 "%d\n"					// number of points
 " 70\n"
-"0\n";
+"0\n";					// open polyline
 
-string POINT =
+string POLYLINE_POINT =
 " 10\n"
 "%f\n"
 " 20\n"
-"%f\n"
-" 30\n"
-"0.0\n";
+"%f\n";
+
+string LINE =
+"  0\n"
+"LINE\n"
+"  8\n"
+"0\n"					// layer
+" 10\n"
+"%f\n"					// start x
+" 20\n"
+"%f\n"					// start y
+" 11\n"
+"%f\n"					// end x
+" 21\n"
+"%f\n";					// end y
+
+string ARC =
+"  0\n"
+"ARC\n"
+"  8\n"
+"0\n"					// layer
+" 10\n"
+"%f\n"					// center x
+" 20\n"
+"%f\n"					// center y
+" 40\n"
+"%f\n"					// radius
+" 50\n"
+"%f\n"					// start angle
+" 51"
+"%f\n";					// end angle
+
+string CIRCLE =
+"  0\n"
+"CIRCLE\n"
+"  8\n"
+"0\n"					// layer
+" 10\n"
+"%f\n"					// center x
+" 20\n"
+"%f\n"					// center y
+" 40\n"
+"%f\n";					// radius
 
 string TRAILER =
 "  0\n"
@@ -64,7 +94,6 @@ string TRAILER =
 
 void processLayer(UL_BOARD B, int layer) {
   int cream = (layer == LAYER_TOP ? LAYER_TCREAM : LAYER_BCREAM);
-  int id = 100;
   printf("%s", HEADER);
   B.elements(E) {
     E.package.contacts(C) {
@@ -79,13 +108,13 @@ void processLayer(UL_BOARD B, int layer) {
 	real hs = h * sin(a);
 	real ws = w * sin(a);
 	real hc = h * cos(a);
-	printf(POLYLINE, id++, 6);	// 6 points
-	printf(POINT, x + wc - hs, y + ws + hc);	// a
-	printf(POINT, x - wc - hs, y - ws + hc);	// b
-	printf(POINT, x - wc + hs, y - ws - hc);	// c
-	printf(POINT, x + wc + hs, y + ws - hc);	// d
-	printf(POINT, x + wc - hs, y + ws + hc);	// a; close the rectangle
-	printf(POINT, x - wc - hs, y - ws + hc);	// b; one more line
+	printf(POLYLINE, 6);	// 6 points
+	printf(POLYLINE_POINT, x + wc - hs, y + ws + hc);	// a
+	printf(POLYLINE_POINT, x - wc - hs, y - ws + hc);	// b
+	printf(POLYLINE_POINT, x - wc + hs, y - ws - hc);	// c
+	printf(POLYLINE_POINT, x + wc + hs, y + ws - hc);	// d
+	printf(POLYLINE_POINT, x + wc - hs, y + ws + hc);	// a
+	printf(POLYLINE_POINT, x - wc - hs, y - ws + hc);	// b
       }
     }
   }
