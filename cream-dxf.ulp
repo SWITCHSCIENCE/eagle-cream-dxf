@@ -4,7 +4,7 @@
 // Copyright (c) 2010 Switch Science, Inc.
 //
 
-real SHRINK_WIDTH = 0.05;			// unit: mm
+real SHRINK_WIDTH = 0.15;		// unit: mm
 
 string HEADER =
 "  0\n"
@@ -73,6 +73,7 @@ void processLayer(UL_BOARD B, int layer) {
 	real y = C.smd.y / 10000.0;
 	real w = C.smd.dx[cream] / 10000.0 / 2 - SHRINK_WIDTH;
 	real h = C.smd.dy[cream] / 10000.0 / 2 - SHRINK_WIDTH;
+	real r = C.smd.roundness;
 	real a = C.smd.angle / 180 * PI;
 	real wc = w * cos(a);
 	real hs = h * sin(a);
